@@ -1,6 +1,8 @@
 FROM pytorch/pytorch:1.6.0-cuda10.1-cudnn7-devel
 
 RUN apt-get update && apt-get install -y wget curl git build-essential
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
+    apt-get update && apt-get install -y wget curl git build-essential
 
 # Miniconda
 # ENV PATH="/root/miniconda3/bin:${PATH}"
@@ -23,3 +25,9 @@ RUN pip install ipykernel jupyterlab jupyter_http_over_ws \
 
 WORKDIR /content/
 COPY . /content/DECA/
+#build DECA
+# docker build -t deca:latest .
+#run container with jupyter lab
+#docker run -it --rm -p 8888:8888 -v $(pwd):/content/DECA/ --gpus all --ipc=host --name deca deca:latest jupyter lab
+#run container with compose
+#docker-compose up -d
