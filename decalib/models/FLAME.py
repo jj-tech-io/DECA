@@ -225,11 +225,23 @@ class FLAMETex(nn.Module):
     def __init__(self, config):
         super(FLAMETex, self).__init__()
         if config.tex_type == 'BFM':
-            mu_key = 'MU'
+
+
+            mu_key = 'BFM2009_cropped_corr'
             pc_key = 'PC'
             n_pc = 199
             tex_path = config.tex_path
-            tex_space = np.load(tex_path)
+            tex_space = np.load(tex_path, allow_pickle=True, encoding='latin1')
+
+            if mu_key not in tex_space.files:
+                print(f"The key '{mu_key}' is not in the file. Available keys: {tex_space.files}")
+                # Handle the error, e.g., use a different key or raise an exception
+                raise KeyError(f"The key '{mu_key}' is not in the file.")
+            pc_key = 'PC'  # The key you expect
+            if pc_key not in tex_space.files:
+                print(f"The key '{pc_key}' is not in the file. Available keys: {tex_space.files}")
+                # Handle the error, e.g., use a different key or raise an exception
+                raise KeyError(f"The key '{pc_key}' is not in the file.")
             texture_mean = tex_space[mu_key].reshape(1, -1)
             texture_basis = tex_space[pc_key].reshape(-1, n_pc)
 
@@ -237,7 +249,9 @@ class FLAMETex(nn.Module):
             mu_key = 'mean'
             pc_key = 'tex_dir'
             n_pc = 200
-            tex_path = config.flame_tex_path
+            print('loading FLAME texture')
+            print('tex_path:', config.tex_path)
+            tex_path = "data/FLAME_texture.npz"
             tex_space = np.load(tex_path)
             texture_mean = tex_space[mu_key].reshape(1, -1)/255.
             texture_basis = tex_space[pc_key].reshape(-1, n_pc)/255.

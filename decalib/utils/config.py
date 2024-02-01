@@ -6,6 +6,7 @@ import argparse
 import yaml
 import os
 
+
 cfg = CN()
 
 abs_deca_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -14,7 +15,8 @@ cfg.device = 'cuda'
 cfg.device_id = '0'
 
 cfg.pretrained_modelpath = os.path.join(cfg.deca_dir, 'data', 'deca_model.tar')
-cfg.output_dir = ''
+cfg.output_dir = 'output'
+
 cfg.rasterizer_type = 'pytorch3d'
 # ---------------------------------------------------------------------------- #
 # Options for Face model
@@ -29,8 +31,8 @@ cfg.model.flame_lmk_embedding_path = os.path.join(cfg.deca_dir, 'data', 'landmar
 cfg.model.face_mask_path = os.path.join(cfg.deca_dir, 'data', 'uv_face_mask.png') 
 cfg.model.face_eye_mask_path = os.path.join(cfg.deca_dir, 'data', 'uv_face_eye_mask.png') 
 cfg.model.mean_tex_path = os.path.join(cfg.deca_dir, 'data', 'mean_texture.jpg') 
-cfg.model.tex_path = os.path.join(cfg.deca_dir, 'data', 'FLAME_albedo_from_BFM.npz') 
-cfg.model.tex_type = 'BFM' # BFM, FLAME, albedoMM
+cfg.model.tex_path = os.path.join(cfg.deca_dir, 'data', 'FLAME_texture.npz') 
+cfg.model.tex_type = 'FLAME' # BFM, FLAME, albedoMM
 cfg.model.uv_size = 256
 cfg.model.param_list = ['shape', 'tex', 'exp', 'pose', 'cam', 'light']
 cfg.model.n_shape = 100
@@ -52,8 +54,8 @@ cfg.model.max_z = 0.01
 # Options for Dataset
 # ---------------------------------------------------------------------------- #
 cfg.dataset = CN()
-cfg.dataset.training_data = ['vggface2', 'ethnicity']
-# cfg.dataset.training_data = ['ethnicity']
+# cfg.dataset.training_data = ['vggface2', 'ethnicity']
+cfg.dataset.training_data = ['ethnicity']
 cfg.dataset.eval_data = ['aflw2000']
 cfg.dataset.test_data = ['']
 cfg.dataset.batch_size = 2
@@ -120,24 +122,30 @@ def get_cfg_defaults():
     return cfg.clone()
 
 def update_cfg(cfg, cfg_file):
-    cfg.merge_from_file(cfg_file)
-    return cfg.clone()
+    cfg_file = os.path.join(cfg.deca_dir, 'logs', cfg_file)
+    with open(cfg_file, 'w') as f:
+        cfg_data = yaml.dump(cfg, f, default_flow_style=False)
+    cfg.merge_from_other_cfg(CN(cfg_data))  # Create a new CfgNode object
+    return cfg
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cfg', type=str, help='cfg file path')
-    parser.add_argument('--mode', type=str, default = 'train', help='deca mode')
+    parser.add_argument('--mode', type=str, default='train', help='deca mode')
 
     args = parser.parse_args()
     print(args, end='\n\n')
 
+    # Get the default configuration
     cfg = get_cfg_defaults()
-    cfg.cfg_file = None
-    cfg.mode = args.mode
-    # import ipdb; ipdb.set_trace()
+
+    # Update the cfg_file attribute
+    cfg.cfg_file = args.cfg
+
+    # If a cfg file is provided, update the default configuration with values from the file
     if args.cfg is not None:
-        cfg_file = args.cfg
         cfg = update_cfg(cfg, args.cfg)
-        cfg.cfg_file = cfg_file
+
+    cfg.mode = args.mode
 
     return cfg

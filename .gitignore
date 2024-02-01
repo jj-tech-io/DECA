@@ -47,3 +47,10 @@ __pycache__
 cluster_scripts
 internal
 *TestSamples*
+*.jpeg
+*.npy
+*.0
+*.jpg
+*.caffemodel
+*.prototxt
+*.ply

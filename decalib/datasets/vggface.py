@@ -25,7 +25,7 @@ class VGGFace2Dataset(Dataset):
         if isEval:
             datafile = '/ps/scratch/face2d3d/texture_in_the_wild_code/VGGFace2_cleaning_codes/ringnetpp_training_lists/second_cleaning/vggface2_val_list_max_normal_100_ring_5_1_serial.npy'
         self.data_lines = np.load(datafile).astype('str')
-
+        
         self.isTemporal = isTemporal
         self.scale = scale #[scale_min, scale_max]
         self.trans_scale = trans_scale #[dx, dy]

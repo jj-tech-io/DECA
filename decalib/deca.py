@@ -42,6 +42,7 @@ class DECA(nn.Module):
             self.cfg = cfg
         else:
             self.cfg = config
+        self.cfg.model.extract_tex = True
         self.device = device
         self.image_size = self.cfg.dataset.image_size
         self.uv_size = self.cfg.model.uv_size

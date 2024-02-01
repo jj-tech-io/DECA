@@ -1,6 +1,5 @@
 !!python/object/new:yacs.config.CfgNode
 dictitems:
-  cfg_file: null
   dataset: !!python/object/new:yacs.config.CfgNode
     dictitems:
       K: 4
@@ -55,7 +54,6 @@ dictitems:
       __immutable__: false
       __new_allowed__: false
       __renamed_keys__: {}
-  mode: train
   model: !!python/object/new:yacs.config.CfgNode
     dictitems:
       dense_template_path: c:\Users\joeli\Dropbox\Code\Python Projects\DECA\data\texture_data_256.npy
@@ -82,7 +80,7 @@ dictitems:
       - pose
       - cam
       - light
-      tex_path: c:\Users\joeli\Dropbox\Code\Python Projects\DECA\data\FLAME_albedo_from_BFM.npz
+      tex_path: c:\Users\joeli\Dropbox\Code\Python Projects\DECA\data\BFM_to_FLAME_corr.npz
       tex_type: BFM
       topology_path: c:\Users\joeli\Dropbox\Code\Python Projects\DECA\data\head_template.obj
       use_tex: true
@@ -92,7 +90,7 @@ dictitems:
       __immutable__: false
       __new_allowed__: false
       __renamed_keys__: {}
-  output_dir: ''
+  output_dir: output
   pretrained_modelpath: c:\Users\joeli\Dropbox\Code\Python Projects\DECA\data\deca_model.tar
   rasterizer_type: pytorch3d
   train: !!python/object/new:yacs.config.CfgNode
